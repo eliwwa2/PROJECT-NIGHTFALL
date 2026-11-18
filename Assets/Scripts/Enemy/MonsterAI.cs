@@ -127,6 +127,8 @@ public class MonsterAI : MonoBehaviour
     {
         if (state == State.Chase || state == State.Attack)
             return;
+            if (agent == null || !agent.enabled || !agent.isOnNavMesh)
+    return;
 
         lastKnownPosition = noisePosition;
         searchTimer = 0f;
