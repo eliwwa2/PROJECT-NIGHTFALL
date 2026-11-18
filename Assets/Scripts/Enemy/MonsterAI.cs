@@ -12,18 +12,15 @@ public class MonsterAI : MonoBehaviour
         Attack
     }
 
-    [Header("Monster")]
     public State state = State.Patrol;
+
     public NavMeshAgent agent;
     public Transform player;
     public Transform[] patrolPoints;
 
-    [Header("Geschwindigkeit")]
     public float patrolSpeed = 1.8f;
     public float chaseSpeed = 4.5f;
     public float searchSpeed = 2.5f;
-
-    [Header("Suche")]
     public float searchDuration = 8f;
 
     private int patrolIndex;
@@ -60,11 +57,16 @@ public class MonsterAI : MonoBehaviour
             case State.Search:
                 Search();
                 break;
+
+            case State.Attack:
+                agent.isStopped = true;
+                break;
         }
     }
 
     private void Patrol()
     {
+        agent.isStopped = false;
         agent.speed = patrolSpeed;
 
         if (patrolPoints.Length == 0)
@@ -89,22 +91,36 @@ public class MonsterAI : MonoBehaviour
         if (player == null)
             return;
 
+        agent.isStopped = false;
         agent.speed = chaseSpeed;
         agent.SetDestination(player.position);
     }
 
     private void Search()
     {
+        agent.isStopped = false;
         agent.speed = searchSpeed;
+
         searchTimer += Time.deltaTime;
 
-        if (searchTimer >= searchDuration)
+        if (!agent.pathPending &&
+            agent.remainingDistance <= agent.stoppingDistance)
         {
-            state = State.Patrol;
-
-            if (patrolPoints.Length > 0)
-                SetPatrolDestination();
+            if (searchTimer >= searchDuration)
+                ReturnToPatrol();
         }
+        else if (searchTimer >= searchDuration * 2f)
+        {
+            ReturnToPatrol();
+        }
+    }
+
+    private void ReturnToPatrol()
+    {
+        state = State.Patrol;
+
+        if (patrolPoints.Length > 0)
+            SetPatrolDestination();
     }
 
     public void HearNoise(Vector3 noisePosition)
@@ -116,13 +132,8 @@ public class MonsterAI : MonoBehaviour
         searchTimer = 0f;
         state = State.Search;
 
-        if (agent != null && agent.isOnNavMesh)
-        {
-            agent.speed = searchSpeed;
-            agent.SetDestination(lastKnownPosition);
-        }
-
-        Debug.Log("Monster hat ein Geräusch gehört!");
+        agent.isStopped = false;
+        agent.SetDestination(lastKnownPosition);
     }
 
     public void PlayerDetected()
@@ -142,7 +153,7 @@ public class MonsterAI : MonoBehaviour
         searchTimer = 0f;
         state = State.Search;
 
-        if (agent != null && agent.isOnNavMesh)
-            agent.SetDestination(lastKnownPosition);
+        agent.isStopped = false;
+        agent.SetDestination(lastKnownPosition);
     }
 }
