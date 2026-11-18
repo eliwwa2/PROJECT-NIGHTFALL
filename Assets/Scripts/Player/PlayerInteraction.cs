@@ -53,4 +53,14 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
+}BatteryPickup battery =
+    hit.collider.GetComponentInParent<BatteryPickup>();
+
+if (battery != null)
+{
+    FlashlightBattery flashlightBattery =
+        FindFirstObjectByType<FlashlightBattery>();
+
+    battery.Collect(flashlightBattery);
+    return;
 }
