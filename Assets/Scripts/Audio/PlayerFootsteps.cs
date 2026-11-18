@@ -1,6 +1,6 @@
 
 using UnityEngine;
-using UnityEngine.CharacterController;
+using UnityEngine;
 
 public class PlayerFootsteps : MonoBehaviour
 {
