@@ -3,12 +3,10 @@ using UnityEngine;
 
 public class MonsterAttack : MonoBehaviour
 {
-    [Header("Angriff")]
     public float damage = 25f;
     public float attackRange = 1.8f;
     public float attackCooldown = 1.5f;
 
-    [Header("Verbindungen")]
     public Transform player;
     public MonsterAI monsterAI;
     public Animator animator;
@@ -29,7 +27,8 @@ public class MonsterAttack : MonoBehaviour
         if (player == null || monsterAI == null)
             return;
 
-        if (monsterAI.state != MonsterAI.State.Chase)
+        if (monsterAI.state != MonsterAI.State.Chase &&
+            monsterAI.state != MonsterAI.State.Attack)
             return;
 
         float distance = Vector3.Distance(
@@ -37,13 +36,18 @@ public class MonsterAttack : MonoBehaviour
             player.position
         );
 
-        if (distance <= attackRange)
+        if (distance > attackRange)
         {
-            monsterAI.state = MonsterAI.State.Attack;
+            if (monsterAI.state == MonsterAI.State.Attack)
+                monsterAI.state = MonsterAI.State.Chase;
 
-            if (Time.time >= nextAttackTime)
-                TryAttack();
+            return;
         }
+
+        monsterAI.state = MonsterAI.State.Attack;
+
+        if (Time.time >= nextAttackTime)
+            TryAttack();
     }
 
     private void TryAttack()
