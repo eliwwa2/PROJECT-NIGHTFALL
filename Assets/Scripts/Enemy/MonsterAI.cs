@@ -81,9 +81,23 @@ public class MonsterAI : MonoBehaviour
     }
 
     private void SetPatrolDestination()
-    {
-        if (patrolPoints[patrolIndex] != null)
-            agent.SetDestination(patrolPoints[patrolIndex].position);
+{
+    if (agent == null || !agent.enabled || !agent.isOnNavMesh)
+        return;
+
+    if (patrolPoints == null || patrolPoints.Length == 0)
+        return;
+
+    patrolIndex = Mathf.Clamp(patrolIndex, 0, patrolPoints.Length - 1);
+
+    Transform point = patrolPoints[patrolIndex];
+
+    if (point == null)
+        return;
+
+    agent.isStopped = false;
+    agent.SetDestination(point.position);
+}
     }
 
     private void Chase()
