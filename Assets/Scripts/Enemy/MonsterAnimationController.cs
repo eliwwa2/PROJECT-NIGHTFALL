@@ -17,8 +17,9 @@ public class MonsterAnimationController : MonoBehaviour
         if (monsterAI == null)
             monsterAI = GetComponent<MonsterAI>();
 
-        if (animator == null)
-            animator = GetComponent<Animator>();
+        if (animator == null || agent == null ||
+    !agent.enabled || !agent.isOnNavMesh)
+    return;
     }
 
     private void Update()
