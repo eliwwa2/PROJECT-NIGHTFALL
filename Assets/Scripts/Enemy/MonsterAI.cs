@@ -69,8 +69,8 @@ public class MonsterAI : MonoBehaviour
         agent.isStopped = false;
         agent.speed = patrolSpeed;
 
-        if (patrolPoints.Length == 0)
-            return;
+        if (patrolPoints != null && patrolPoints.Length > 0)
+    SetPatrolDestination();
 
         if (!agent.pathPending &&
             agent.remainingDistance <= agent.stoppingDistance)
