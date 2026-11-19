@@ -35,8 +35,8 @@ public class MonsterAI : MonoBehaviour
 
     private void Start()
     {
-        if (agent != null && patrolPoints.Length > 0)
-            SetPatrolDestination();
+        if (agent != null && agent.enabled && agent.isOnNavMesh &&
+    patrolPoints != null && patrolPoints.Length > 0)
     }
 
     private void Update()
