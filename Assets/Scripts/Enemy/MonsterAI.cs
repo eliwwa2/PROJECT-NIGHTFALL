@@ -142,6 +142,8 @@ public class MonsterAI : MonoBehaviour
     {
         if (player == null)
             return;
+            if (agent == null || !agent.enabled || !agent.isOnNavMesh)
+    return;
 
         state = State.Chase;
     }
