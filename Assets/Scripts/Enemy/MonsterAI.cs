@@ -113,7 +113,8 @@ public class MonsterAI : MonoBehaviour
     }
 
     private void Search()
-    {
+    {if (agent == null || !agent.enabled || !agent.isOnNavMesh)
+    return;
         agent.isStopped = false;
         agent.speed = searchSpeed;
 
